@@ -32,6 +32,10 @@ public class CountryManager : MonoBehaviour
         RefreshDetails();
         ListRegions();
         SetStartingResources();
+        foreach(RegionHandler reg in regionList)
+        {
+            reg.SetPassiveShowcase();
+        }
     }
 
     //UI interface
@@ -70,9 +74,11 @@ public class CountryManager : MonoBehaviour
     [System.Serializable]
     public struct Resources
     {
-        public int money;
+        public int maxEnergy;
+        public int usedEnergy;
         public int iron;
         public int traktors;
+        public int textil;
     }
 
 
@@ -94,7 +100,7 @@ public class CountryManager : MonoBehaviour
 
     private void SetStartingResources()
     {
-        resources.money = 650;
+        resources.maxEnergy = 650;
         resources.iron = 7;
         UpdateGlobalResources();
     }
@@ -140,9 +146,14 @@ public class CountryManager : MonoBehaviour
         return ruinTimer;
     }
 
-    public int GetMoney()
+    public int TotalEnergy()
     {
-        return resources.money;
+        return resources.maxEnergy;
+    }
+
+    public int AvailableEnergy()
+    {
+        return (resources.maxEnergy - resources.usedEnergy);
     }
 
     public int GetIron()
@@ -241,6 +252,7 @@ public class CountryManager : MonoBehaviour
         if (selectedRegion != null)
         {
             detailsui.SetRegionDetails(selectedRegion);
+            selectedRegion.SetPassiveShowcase();
             SetShowcase();
             UpdateGlobalResources();
             detailsui.Activate();
@@ -282,7 +294,8 @@ public class CountryManager : MonoBehaviour
     //updates display of global resources to stored values
     private void UpdateGlobalResources()
     {
-        globalResources[0].text = resources.money.ToString();
+        string availableEnergy = (resources.maxEnergy - resources.usedEnergy).ToString();
+        globalResources[0].text = availableEnergy + "/" + resources.maxEnergy.ToString();
         globalResources[1].text = resources.iron.ToString();
         globalResources[2].text = FoodProduction().ToString();
         globalResources[3].text = turn.ToString();
@@ -369,7 +382,7 @@ public class CountryManager : MonoBehaviour
 
     public void CommitStructure(BuildingType building)
     {
-        resources = building.ApplyConstructionCosts(resources);
+        building.ApplyConstructionCosts(ref resources);
 
         builtThisTurn++;
         RefreshDetails();
@@ -438,7 +451,7 @@ public class CountryManager : MonoBehaviour
         foreach (RegionHandler reg in regionList)
         {
             reg.CheckRuin();
-            resources = reg.UpdateResources(resources);
+            reg.Produce(ref resources);
             FYP.GetSummary().AddProduced(reg);
             reg.EndBuildingTurn();
         }

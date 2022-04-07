@@ -7,18 +7,24 @@ using UnityEngine;
 public interface BuildingType
 {
     public bool CanBuild();
-    public CountryManager.Resources ApplyConstructionCosts(CountryManager.Resources res);
-    public RegionHandler.Region IncreaseProductions(RegionHandler.Region reg);
-    public RegionHandler.Region RemoveProductions(RegionHandler.Region reg);
+    public void ApplyConstructionCosts(ref CountryManager.Resources res);
+    public void ApplyProductions(ref CountryManager.Resources res);
+    //public void IncreaseProductions(ref RegionHandler.Region reg);
+    //public void RemoveProductions(ref RegionHandler.Region reg);
     public int RequiredWorkers();
     public string StringProductions();
-    public bool TakesSlot();
+    public bool TakesSlot(); //remove after we make slotstructure function (SS implicitely takes a slot, buildingtype without ss does not)
+}
+
+public interface SlotStructure : BuildingType
+{
+    //public void ApplyProductions(ref CountryManager.Resources res);
+    //public int RequiredWorkers();
+    //public string StringProductions();
 }
 
 public interface Acommodation : BuildingType
 {
-    public int Maintenance();
-
     public int ProvidedPopulation();
 }
 
@@ -29,12 +35,6 @@ public interface Mines : BuildingType
 
 public interface Lahka : BuildingType
 {
-    public int MoneyProduction();
-
-    public int ElectronicProduction();
-
-    public int ChemicalProduction();
-
     public int TextilProduction();
 }
 
@@ -42,16 +42,12 @@ public interface Tazka : BuildingType
 {
     public int TraktorProduction();
 
-    public int TankProduction();
-
     public int IronExpense();
 }
 
 public interface Power : BuildingType
 {
-    public int PowerProduction();
-
-    public int Maintenance();
+    public int EnergyProduction();
 }
 
 public interface Special : BuildingType

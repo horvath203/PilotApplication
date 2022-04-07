@@ -64,35 +64,39 @@ public class StructureSlot
         else return 0;
     }
 
-    public int MoneyProduction()
+    
+    public int EnergyProduction()
     {
-        //if(building is type Lahka) return building.MoneyProduction();
-        //if(building is type Accomodation) return building.Maintenance();
+        Power power = GetBuilding() as Power;
+        if(power != null) return power.EnergyProduction();
         return 0;
     }
-
+    
     public int IronProduction()
     {
-        //if(building is type Mines) return building.IronProduction();
-        //if(building is type Tazka) return building.IronExpense();
+        Mines mine = GetBuilding() as Mines;
+        if (mine != null) return mine.IronProduction();
+        Tazka tazka = GetBuilding() as Tazka;
+        if (tazka != null) return tazka.IronExpense();
         return 0;
     }
 
     public int TraktorProduction()
     {
-        //if(building is type Tazka) return building.TraktorProduction();
+        Tazka tazka = GetBuilding() as Tazka;
+        if (tazka != null) return tazka.TraktorProduction();
         return 0;
     }
 
-
-
-    public RegionHandler.Region ConfirmBuilding(RegionHandler.Region reg)
+    public int TextilProduction()
     {
-        building.GetComponent<DoubleLink>().SwapLink();
-        permanent = true;
-        builtDate = CountryManager.Instance.CurrentTurn();
-        return GetBuilding().IncreaseProductions(reg);
+        Lahka lahka = GetBuilding() as Lahka;
+        if (lahka != null) return lahka.TextilProduction();
+        return 0;
     }
+    
+
+
 
     public void Build(GameObject newBuilding)
     {
@@ -115,25 +119,42 @@ public class StructureSlot
         building = emptySlot;
     }
 
+    public void ConfirmBuilding()
+    {
+        building.GetComponent<DoubleLink>().SwapLink();
+        permanent = true;
+        builtDate = CountryManager.Instance.CurrentTurn();
+    }
+
+    public void ApplyProductions(ref CountryManager.Resources res, float quant)
+    {
+        if (!ruin)
+        {
+            res.iron += QuantifiedProduction(IronProduction(), quant);
+            res.traktors += QuantifiedProduction(TraktorProduction(), quant);
+            res.textil += QuantifiedProduction(TextilProduction(), quant);
+        }
+    }
+
+    private int QuantifiedProduction(int prod, float quant)
+    {
+        return (int)(prod * quant);
+    }
+
     public int Age()
     {
-        if (!IsOccupied())
-        {
-            return 0;
-        }
+        if (!IsOccupied()) return 0;
         return CountryManager.Instance.CurrentTurn() - builtDate;
     }
 
-    public RegionHandler.Region Ruin(RegionHandler.Region reg)
+    public void Ruin(ref RegionHandler.Region reg)
     {
         ruin = true;
-        return GetBuilding().RemoveProductions(reg);
     }
 
-    public RegionHandler.Region Restore(RegionHandler.Region reg)
+    public void Restore(ref RegionHandler.Region reg)
     {
         ruin = false;
         builtDate = CountryManager.Instance.CurrentTurn();
-        return GetBuilding().IncreaseProductions(reg);
     }
 }

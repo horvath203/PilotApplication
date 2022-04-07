@@ -110,10 +110,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 14cd6c3ea5efbcc49b1c2274899bf0f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moneyCost: 0
+  energyCost: 50
   ironCost: 2
   requiredWorkers: 50
-  moneyProduction: 50
-  electronicProduction: 0
-  chemicalProduction: 0
   textilProduction: 0

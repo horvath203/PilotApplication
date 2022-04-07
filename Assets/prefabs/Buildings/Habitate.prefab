@@ -109,7 +109,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75c87b22cfc405744bfba213f563b800, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moneyCost: 100
+  energyCost: 50
   ironCost: 1
-  maintenance: 10
   providedPopulation: 50

@@ -23,16 +23,18 @@ public class Summary : MonoBehaviour
         }
     }
 
+    //this should probably be some kind of a listener or smth
     public void AddProduced(RegionHandler reg)
     {
         CountryManager.Resources res;
-        res.money = 0;
+        res.maxEnergy = 0;
+        res.usedEnergy = 0;
         res.iron = 0;
-        res.traktors = 0;   
-        res = reg.UpdateResources(res);
+        res.traktors = 0;
+        res.textil = 0;
+        reg.Produce(ref res);
 
-        generated[0] = res.money;
-        generated[1] = res.iron;
-        generated[2] = res.traktors;
+        generated[1] += res.iron;
+        generated[2] += res.traktors;
     }
 }
