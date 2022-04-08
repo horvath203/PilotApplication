@@ -9,18 +9,25 @@ public class PassiveBuildings : MonoBehaviour
 
     int foodProduction;
     [SerializeField]
-    float JRDLevel = 1;
+    int jrdLevel = 1;
+    float jrdmulti = 1;
+
+    public int JRDLevel()
+    {
+        return jrdLevel;
+    }
 
     public void UpgradeJRD()
     {
-        JRDLevel += 0.5f;
+        jrdLevel++;
+        jrdmulti += 0.5F;
     }
 
     public int JRDProduction()
     {
         int farmers = gameObject.GetComponent<RegionHandler>().RemainingPopulation();
 
-        foodProduction = (int) (farmers * JRDLevel);
+        foodProduction = (int) (farmers * jrdmulti);
         return foodProduction;
     }
 
@@ -28,22 +35,27 @@ public class PassiveBuildings : MonoBehaviour
     //in each region, the remaining population (farmers) works at (multiplier * 100)% efficiency
 
     [SerializeField]
-    int INFLevel = 1;
-    float multiplier = 1;
+    int infLevel = 1;
+    float infmult = 1;
+
+    public int INFLevel()
+    {
+        return infLevel;
+    }
 
     public int INFCost()
     {
-        return INFLevel * INFLevel;
+        return infLevel * infLevel;
     }
 
     public void UpgradeINF()
     {
-        INFLevel++;
-        multiplier += 0.5F;
+        infLevel++;
+        infmult += 0.5F;
     }
 
     public float INFMultiplier()
     {
-        return multiplier;
+        return infmult;
     }
 }

@@ -7,20 +7,20 @@ using UnityEngine;
 public class BuildingB : MonoBehaviour, Mines
 {
     [SerializeField]
-    private int moneyCost = 0;
+    private int energyCost;
     [SerializeField]
-    private int ironCost = 0;
+    private int ironCost;
     [SerializeField]
-    private int requiredWorkers = 0;
+    private int requiredWorkers;
 
     [SerializeField]
-    private int ironProduction = 0;
+    private int ironProduction;
 
     //COSTS AND CONDITIONS
 
-    public int MoneyCost()
+    public int EnergyCost()
     {
-        return moneyCost;
+        return energyCost;
     }
 
     public int IronCost()
@@ -47,7 +47,7 @@ public class BuildingB : MonoBehaviour, Mines
 
     public string StringProductions()
     {
-        string prod = "Iron: " + ironProduction.ToString();
+        string prod = "Iron: " + IronProduction().ToString();
         return prod;
     }
 
@@ -59,7 +59,7 @@ public class BuildingB : MonoBehaviour, Mines
         RegionHandler reg = cm.GetSelectedRegion();
 
         if (reg.AvailablePopulation() >= requiredWorkers &&
-           cm.GetMoney() >= moneyCost &&
+           cm.AvailableEnergy() >= energyCost &&
            cm.GetIron() >= ironCost
            )
         {
@@ -69,27 +69,28 @@ public class BuildingB : MonoBehaviour, Mines
         return false;
     }
 
-    public CountryManager.Resources ApplyConstructionCosts(CountryManager.Resources res)
+    public void ApplyConstructionCosts(ref CountryManager.Resources res)
     {
-        res.money -= moneyCost;
+        res.usedEnergy += energyCost;
         res.iron -= ironCost;
-
-        return res;
     }
 
-    public RegionHandler.Region IncreaseProductions(RegionHandler.Region reg)
+    public void ApplyProductions(ref CountryManager.Resources res)
+    {
+        res.iron += IronProduction();
+    }
+
+    /*
+    public void IncreaseProductions(ref RegionHandler.Region reg)
     {
         reg.busyWorkers += requiredWorkers;
         reg.ironProduction += ironProduction;
-
-        return reg;
     }
 
-    public RegionHandler.Region RemoveProductions(RegionHandler.Region reg)
+    public void RemoveProductions(ref RegionHandler.Region reg)
     {
         reg.busyWorkers -= requiredWorkers;
         reg.ironProduction -= ironProduction;
-
-        return reg;
     }
+    */
 }

@@ -15,22 +15,20 @@ public class RegionHandler : MonoBehaviour
     private List<StructureSlot> buildingSlots = new List<StructureSlot>();
 
     [SerializeField]
-    private int habitates = 0;
+    private int habitates;
+
+    [SerializeField]
+    private List<PassiveText> passiveTexts = new List<PassiveText>();
 
     [System.Serializable]
     public struct Region
     {
-        //attributes
         public string name;
         public int totalPopulation;
         public int workerPopulation;
         public int busyWorkers;
         public int nextVar;
         public float satisfaction;
-        //productions
-        public int moneyProduction;
-        public int ironProduction;
-        public int traktorsProduction;
     }
     
 
@@ -93,19 +91,24 @@ public class RegionHandler : MonoBehaviour
 
     // --------- PRODUCTIONS ----------
 
-    public int MoneyProduction()
+    public int EnergyProduction()
     {
-        return region.moneyProduction;
+        return 0;
     }
 
     public int IronProduction()
     {
-        return region.ironProduction;
+        return 0;
     }
 
     public int TraktorProduction()
     {
-        return region.traktorsProduction;
+        return 0;
+    }
+
+    public int TextilProduction()
+    {
+        return 0;
     }
 
     public int FoodProduction()
@@ -113,19 +116,23 @@ public class RegionHandler : MonoBehaviour
         return gameObject.GetComponent<PassiveBuildings>().JRDProduction();
     }
 
-    public CountryManager.Resources UpdateResources(CountryManager.Resources res)
+    private float ProductionQuatificator()
     {
-        res.money += QuantifiedProduction(region.moneyProduction);
-        res.iron += QuantifiedProduction(region.ironProduction);
-        res.traktors += QuantifiedProduction(region.traktorsProduction);
-
-        return res;
+        return (region.satisfaction * gameObject.GetComponent<PassiveBuildings>().INFMultiplier());
     }
 
-    private int QuantifiedProduction(int production)
+    public void Produce(ref CountryManager.Resources res)
+    {
+        foreach (StructureSlot slot in buildingSlots)
+        {
+            slot.ApplyProductions(ref res, ProductionQuatificator());
+        }
+    }
+
+    /*private int QuantifiedProduction(int production)
     {
         return (int)((production * region.satisfaction) * gameObject.GetComponent<PassiveBuildings>().INFMultiplier());
-    }
+    }*/
 
     public void Starving(float mult)
     {
@@ -171,7 +178,7 @@ public class RegionHandler : MonoBehaviour
     {
         habitates++;
 
-        region = habitate.GetComponent<BuildingType>().IncreaseProductions(region);
+        region.workerPopulation += habitate.GetComponent<Acommodation>().ProvidedPopulation();
     }
 
     public void BuildStructure(GameObject tbb)
@@ -182,10 +189,22 @@ public class RegionHandler : MonoBehaviour
             {
                 slot.Build(
                     Instantiate(tbb, slot.GetTransform().position, slot.GetTransform().rotation, transform));
-                //subtract workers
+
                 break;
             }
         }
+    }
+
+    public void SetPassiveShowcase()
+    {
+        string txt = habitates.ToString();
+        passiveTexts[0].ChangeText(txt);
+
+        txt = GetComponent<PassiveBuildings>().INFLevel().ToString();
+        passiveTexts[1].ChangeText(txt);
+
+        txt = GetComponent<PassiveBuildings>().JRDLevel().ToString();
+        passiveTexts[2].ChangeText(txt);
     }
 
     public void CancelPlannedBuilding(StructureSlot slot)
@@ -198,7 +217,7 @@ public class RegionHandler : MonoBehaviour
 
     public void RestoreBuilding(StructureSlot slot)
     {
-        region = slot.Restore(region);
+        slot.Restore(ref region);
     }
 
     // ------------------- END TURN -------------------------
@@ -209,8 +228,8 @@ public class RegionHandler : MonoBehaviour
         {
             if ( (!slot.IsRuined()) && slot.Age() > CountryManager.Instance.RuinTimer())
             {
-                Debug.Log("Where is SHE?!");
-                region = slot.Ruin(region);
+                //Debug.Log("Where is SHE?!");
+                slot.Ruin(ref region);
             }
         }
     }
@@ -222,7 +241,8 @@ public class RegionHandler : MonoBehaviour
             //buildings that are not yet built
             if (!slot.IsPermanent() && (AvailablePopulation() >= slot.RequiredWorkers()) )
             {
-                region = slot.ConfirmBuilding(region);
+                slot.ConfirmBuilding();
+                region.busyWorkers += slot.GetBuilding().RequiredWorkers();
             }
         }
     }

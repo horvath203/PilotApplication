@@ -8,7 +8,7 @@ public class BuildingD : MonoBehaviour, Tazka
 {
     //costs - required to build
     [SerializeField]
-    private int moneyCost;
+    private int energyCost;
     [SerializeField]
     private int ironCost;
     [SerializeField]
@@ -17,17 +17,15 @@ public class BuildingD : MonoBehaviour, Tazka
     //productions - increases production
     //expenses - reduce production
     [SerializeField]
-    private int traktorProduction;
-    [SerializeField]
-    private int tankProduction;
-    [SerializeField]
     private int ironExpense;
+    [SerializeField]
+    private int traktorProduction;
 
     //COSTS AND CONDITIONS
 
-    public int MoneyCost()
+    public int EnergyCost()
     {
-        return moneyCost;
+        return energyCost;
     }
 
     public int IronCost()
@@ -57,16 +55,11 @@ public class BuildingD : MonoBehaviour, Tazka
         return traktorProduction;
     }
 
-    public int TankProduction()
-    {
-        return tankProduction;
-    }
-
     public string StringProductions()
     {
-        string prod = "Traktors: " + traktorProduction.ToString();
+        string prod = "Traktors: " + TraktorProduction().ToString();
         prod += "\n";
-        prod += "Iron Costs: " + ironExpense.ToString();
+        prod += "Iron Costs: " + IronExpense().ToString();
         return prod;
     }
 
@@ -78,7 +71,7 @@ public class BuildingD : MonoBehaviour, Tazka
         RegionHandler reg = cm.GetSelectedRegion();
 
         if (reg.AvailablePopulation() >= requiredWorkers &&
-           cm.GetMoney() >= moneyCost &&
+           cm.AvailableEnergy() >= energyCost &&
            cm.GetIron() >= ironCost
            )
         {
@@ -88,29 +81,42 @@ public class BuildingD : MonoBehaviour, Tazka
         return false;
     }
 
-    public CountryManager.Resources ApplyConstructionCosts(CountryManager.Resources res)
+    public void ApplyConstructionCosts(ref CountryManager.Resources res)
     {
-        res.money -= moneyCost;
+        res.usedEnergy += energyCost;
         res.iron -= ironCost;
-
-        return res;
     }
 
-    public RegionHandler.Region IncreaseProductions(RegionHandler.Region reg)
+    public bool ExpensesAvailable(CountryManager.Resources res)
+    {
+        bool availability = true;
+        if (res.iron < IronExpense()) availability = false;
+
+        return availability;
+    }
+
+    public void ApplyProductions(ref CountryManager.Resources res)
+    {
+        if (ExpensesAvailable(res))
+        {
+            res.iron -= IronExpense();
+            res.traktors += TraktorProduction();
+        }
+    }
+
+    /*
+    public void IncreaseProductions(ref RegionHandler.Region reg)
     {
         reg.busyWorkers += requiredWorkers;
         reg.traktorsProduction += traktorProduction;
         reg.ironProduction -= ironExpense;
-
-        return reg;
     }
 
-    public RegionHandler.Region RemoveProductions(RegionHandler.Region reg)
+    public void RemoveProductions(ref RegionHandler.Region reg)
     {
         reg.busyWorkers -= requiredWorkers;
         reg.traktorsProduction -= traktorProduction;
         reg.ironProduction += ironExpense;
-
-        return reg;
     }
+    */
 }

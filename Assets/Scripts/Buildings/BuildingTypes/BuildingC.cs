@@ -7,26 +7,20 @@ using UnityEngine;
 public class BuildingC : MonoBehaviour, Lahka
 {
     [SerializeField]
-    private int moneyCost;
+    private int energyCost;
     [SerializeField]
     private int ironCost;
     [SerializeField]
     private int requiredWorkers;
 
     [SerializeField]
-    private int moneyProduction;
-    [SerializeField]
-    private int electronicProduction;
-    [SerializeField]
-    private int chemicalProduction;
-    [SerializeField]
     private int textilProduction;
 
     //COSTS AND CONDITIONS
 
-    public int MoneyCost()
+    public int EnergyCost()
     {
-        return moneyCost;
+        return energyCost;
     }
 
     public int IronCost()
@@ -46,21 +40,6 @@ public class BuildingC : MonoBehaviour, Lahka
 
     //PRODUCTIONS
 
-    public int MoneyProduction()
-    {
-        return moneyProduction;
-    }
-
-    public int ElectronicProduction()
-    {
-        return electronicProduction;
-    }
-
-    public int ChemicalProduction()
-    {
-        return chemicalProduction;
-    }
-
     public int TextilProduction()
     {
         return textilProduction;
@@ -68,11 +47,7 @@ public class BuildingC : MonoBehaviour, Lahka
 
     public string StringProductions()
     {
-        string prod = "Money: " + moneyProduction.ToString();
-        prod += "\n";
-        prod += "Electronics: " + electronicProduction.ToString();
-        prod += "\n";
-        prod += "Chemicals: " + chemicalProduction.ToString();
+        string prod = "Textil: " + TextilProduction().ToString();
         return prod;
     }
 
@@ -84,7 +59,7 @@ public class BuildingC : MonoBehaviour, Lahka
         RegionHandler reg = cm.GetSelectedRegion();
 
         if (reg.AvailablePopulation() >= requiredWorkers &&
-           cm.GetMoney() >= moneyCost &&
+           cm.AvailableEnergy() >= energyCost &&
            cm.GetIron() >= ironCost
            )
         {
@@ -94,27 +69,28 @@ public class BuildingC : MonoBehaviour, Lahka
         return false;
     }
 
-    public CountryManager.Resources ApplyConstructionCosts(CountryManager.Resources res)
+    public void ApplyConstructionCosts(ref CountryManager.Resources res)
     {
-        res.money -= moneyCost;
+        res.usedEnergy += energyCost;
         res.iron -= ironCost;
-
-        return res;
     }
 
-    public RegionHandler.Region IncreaseProductions(RegionHandler.Region reg)
+    public void ApplyProductions(ref CountryManager.Resources res)
+    {
+        res.textil += TextilProduction();
+    }
+
+    /*
+    public void IncreaseProductions(ref RegionHandler.Region reg)
     {
         reg.busyWorkers += requiredWorkers;
-        reg.moneyProduction += moneyProduction;
-
-        return reg;
+        reg.energyProduction += moneyProduction;
     }
 
-    public RegionHandler.Region RemoveProductions(RegionHandler.Region reg)
+    public void RemoveProductions(ref RegionHandler.Region reg)
     {
         reg.busyWorkers -= requiredWorkers;
-        reg.moneyProduction -= moneyProduction;
-
-        return reg;
+        reg.energyProduction -= moneyProduction;
     }
+    */
 }

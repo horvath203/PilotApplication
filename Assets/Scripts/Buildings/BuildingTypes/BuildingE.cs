@@ -7,23 +7,14 @@ using UnityEngine;
 public class BuildingE : MonoBehaviour, Power
 {
     [SerializeField]
-    private int moneyCost;
-    [SerializeField]
     private int ironCost;
     [SerializeField]
     private int requiredWorkers;
 
     [SerializeField]
-    private int maintenance;
-    [SerializeField]
-    private int powerProduction;
+    private int energyProduction;
 
     //COSTS AND CONDITIONS
-
-    public int MoneyCost()
-    {
-        return moneyCost;
-    }
 
     public int IronCost()
     {
@@ -42,21 +33,14 @@ public class BuildingE : MonoBehaviour, Power
 
     //PRODUCTIONS
 
-    public int Maintenance()
+    public int EnergyProduction()
     {
-        return maintenance;
-    }
-
-    public int PowerProduction()
-    {
-        return powerProduction;
+        return energyProduction;
     }
 
     public string StringProductions()
     {
-        string prod = "Maintenance: " + maintenance.ToString();
-        prod += "\n";
-        prod += "Power: " + powerProduction.ToString();
+        string prod = "Energy: " + EnergyProduction().ToString();
         return prod;
     }
 
@@ -68,37 +52,36 @@ public class BuildingE : MonoBehaviour, Power
         RegionHandler reg = cm.GetSelectedRegion();
 
         if (reg.AvailablePopulation() >= requiredWorkers &&
-           cm.GetMoney() >= moneyCost &&
            cm.GetIron() >= ironCost
            )
         {
             return true;
         }
-
         return false;
     }
 
-    public CountryManager.Resources ApplyConstructionCosts(CountryManager.Resources res)
+    public void ApplyConstructionCosts(ref CountryManager.Resources res)
     {
-        res.money -= moneyCost;
         res.iron -= ironCost;
-
-        return res;
+        res.maxEnergy += EnergyProduction();
     }
 
-    public RegionHandler.Region IncreaseProductions(RegionHandler.Region reg)
+    public void ApplyProductions(ref CountryManager.Resources res)
+    {
+
+    }
+
+    /*
+    public void IncreaseProductions(ref RegionHandler.Region reg)
     {
         reg.busyWorkers += requiredWorkers;
-        reg.moneyProduction -= maintenance;
-
-        return reg;
+        reg.energyProduction += energyProduction;
     }
 
-    public RegionHandler.Region RemoveProductions(RegionHandler.Region reg)
+    public void RemoveProductions(ref RegionHandler.Region reg)
     {
         reg.busyWorkers -= requiredWorkers;
-        reg.moneyProduction += maintenance;
-
-        return reg;
+        reg.energyProduction -= energyProduction;
     }
+    */
 }

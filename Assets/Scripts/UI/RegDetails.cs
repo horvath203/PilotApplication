@@ -139,9 +139,9 @@ public class RegDetails : MonoBehaviour
 
     private void SetButtons()
     {
-        int money = CountryManager.Instance.GetMoney();
-        int iron = CountryManager.Instance.GetIron();
-        RegionHandler reg = CountryManager.Instance.GetSelectedRegion();
+        //int money = CountryManager.Instance.GetMoney();
+        //int iron = CountryManager.Instance.GetIron();
+        //RegionHandler reg = CountryManager.Instance.GetSelectedRegion();
 
         foreach(GameObject button in bmenu.buildButtons)
         {
