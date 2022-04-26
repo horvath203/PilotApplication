@@ -112,5 +112,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   energyCost: 50
   ironCost: 2
-  requiredWorkers: 50
+  requiredWorkers: 10
   textilProduction: 0

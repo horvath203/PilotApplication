@@ -112,6 +112,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   energyCost: 50
   ironCost: 1
-  requiredWorkers: 50
+  requiredWorkers: 20
   ironExpense: 1
   traktorProduction: 2

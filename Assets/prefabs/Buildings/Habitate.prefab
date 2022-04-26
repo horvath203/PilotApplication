@@ -111,4 +111,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   energyCost: 50
   ironCost: 1
-  providedPopulation: 50
+  providedPopulation: 10
