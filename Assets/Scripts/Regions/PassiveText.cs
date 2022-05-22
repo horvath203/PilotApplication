@@ -9,7 +9,7 @@ public class PassiveText : MonoBehaviour
 
     void Start()
     {
-        text = GetComponent<TextMesh>();
+        //text = GetComponent<TextMesh>();
     }
 
     public void ChangeText(string newText)
