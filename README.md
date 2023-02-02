@@ -1,4 +1,4 @@
-Pilotná aplikácia k bakalárskej práci, Vývoj Strategických Hier v Unity
+Pilotná aplikácia k dizertačnému projektu, digitálnej hre STRANA, pre-alfa verzia
 
 Návod na spustenie:
 
